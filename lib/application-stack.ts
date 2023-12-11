@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
+import { TableViewer } from 'cdk-dynamo-table-viewer';
 
 export class ApplicationStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -39,9 +40,11 @@ export class HitCounter extends Construct {
     constructor(scope: Construct, id: string, props: HitCounterProps) {
         super(scope, id);
 
-        const dbTableName = ssm.StringParameter.fromStringParameterName(
-            this, 'dbTableName', 'dbTableName',
-        );
+        // const dbTableName = ssm.StringParameter.fromStringParameterName(
+        //     this, 'dbTableName', 'dbTableName',
+        // );
+
+        const dbTableName = ssm.StringParameter.fromStringParameterName(this, 'dbTableName', 'CFN-tableName902E7F8C-XuwnqEe1jX1c')
 
         this.handler = new lambda.Function(this, 'HitCounterHandler', {
             runtime: lambda.Runtime.NODEJS_16_X,
@@ -52,5 +55,6 @@ export class HitCounter extends Construct {
                 HITS_TABLE_NAME: dbTableName.stringValue
             }
         })
+        
     }
 }
