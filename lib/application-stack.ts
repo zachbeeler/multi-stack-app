@@ -6,26 +6,26 @@ import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { TableViewer } from 'cdk-dynamo-table-viewer';
 
 export class ApplicationStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
-   
+    constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+        super(scope, id, props);
 
-    // define the Lambda function
-    const hello = new lambda.Function(this, 'HelloHandler', {
-        runtime: lambda.Runtime.NODEJS_16_X,
-        code: lambda.Code.fromAsset('lambda'),
-        handler: 'hello.handler'
-    });
 
-    const helloWithCounter = new HitCounter(this, 'HelloHitCounter', {
-        downstream: hello
-    });
+        // define the Lambda function
+        const hello = new lambda.Function(this, 'HelloHandler', {
+            runtime: lambda.Runtime.NODEJS_18_X,
+            code: lambda.Code.fromAsset('lambda'),
+            handler: 'hello.handler'
+        });
 
-    // define API GW for the Lambda function
-    new apigw.LambdaRestApi(this, 'Endpoint', {
-        handler: hello
-    })
-  }
+        const helloWithCounter = new HitCounter(this, 'HelloHitCounter', {
+            downstream: hello
+        });
+
+        // define API GW for the Lambda function
+        new apigw.LambdaRestApi(this, 'Endpoint', {
+            handler: hello
+        })
+    }
 }
 
 export interface HitCounterProps {
@@ -47,7 +47,7 @@ export class HitCounter extends Construct {
         const dbTableName = ssm.StringParameter.fromStringParameterName(this, 'dbTableName', 'CFN-tableName902E7F8C-XuwnqEe1jX1c')
 
         this.handler = new lambda.Function(this, 'HitCounterHandler', {
-            runtime: lambda.Runtime.NODEJS_16_X,
+            runtime: lambda.Runtime.NODEJS_18_X,
             handler: 'hitcounter.handler',
             code: lambda.Code.fromAsset('lambda'),
             environment: {
@@ -55,6 +55,6 @@ export class HitCounter extends Construct {
                 HITS_TABLE_NAME: dbTableName.stringValue
             }
         })
-        
+
     }
 }
